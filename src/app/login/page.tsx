@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import { setCookie } from "@/lib/actions";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -30,10 +32,23 @@ export default function LoginPage() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
-    if (!validate()) return;
+    if (!validate()) {
+      return;
+    }
+
     setIsSubmitting(true);
     setErrors((prev) => ({ ...prev, form: undefined }));
+
     try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_API_URL}/auth/login`,
+        { email, password },
+      );
+
+      const token = response.data.token;
+
+      setCookie("smartiAdminToken", token);
+
       router.push("/dashboard");
     } catch (error: any) {
       setErrors((prev) => ({ ...prev, form: error.response.data.message || "Login failed. Please try again." }));
