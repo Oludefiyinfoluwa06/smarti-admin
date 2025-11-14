@@ -26,6 +26,7 @@ const PAGE_BUTTON_LIMIT = 7; // when to show numeric page buttons
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [query, setQuery] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
   const [busyAction, setBusyAction] = useState<string | null>(null);
@@ -257,10 +258,11 @@ export default function OrdersPage() {
 
       <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white">
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 text-slate-600">
+              <thead className="bg-slate-50 text-slate-600">
             <tr>
               <th className="text-left font-medium px-4 py-3">Order</th>
               <th className="text-left font-medium px-4 py-3">Customer</th>
+                  <th className="text-left font-medium px-4 py-3">School</th>
               <th className="text-left font-medium px-4 py-3">Email</th>
               <th className="text-left font-medium px-4 py-3">Total</th>
               <th className="text-left font-medium px-4 py-3">Date</th>
@@ -283,11 +285,12 @@ export default function OrdersPage() {
                   No orders found.
                 </td>
               </tr>
-            ) : (
+              ) : (
               filtered.map((o) => (
-                <tr key={o.id} className="hover:bg-slate-50">
+                <tr key={o.id} className="hover:bg-slate-50 cursor-pointer" onClick={() => setSelectedOrder(o)}>
                   <td className="px-4 py-3 font-medium text-slate-900">{o.orderId}</td>
                   <td className="px-4 py-3">{o.customer}</td>
+                  <td className="px-4 py-3 text-slate-600">{o.school ?? ""}</td>
                   <td className="px-4 py-3 text-slate-600">{o.email}</td>
                   <td className="px-4 py-3 text-slate-900">{o.total}</td>
                   <td className="px-4 py-3 text-slate-600">
@@ -383,6 +386,33 @@ export default function OrdersPage() {
             )}
           </tbody>
         </table>
+
+        {/* Order details modal */}
+        {selectedOrder && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/40" onClick={() => setSelectedOrder(null)} />
+            <div className="relative z-10 max-w-xl w-full bg-white rounded-md shadow-lg p-6">
+              <div className="flex items-start justify-between">
+                <h3 className="text-lg font-semibold">Order {selectedOrder.orderId}</h3>
+                <button onClick={() => setSelectedOrder(null)} className="text-slate-500">Close</button>
+              </div>
+
+              <div className="mt-4 space-y-2 text-sm text-slate-700">
+                <div><strong>Customer:</strong> {selectedOrder.customer}</div>
+                <div><strong>School:</strong> {selectedOrder.school ?? "-"}</div>
+                <div><strong>Email:</strong> {selectedOrder.email}</div>
+                <div><strong>Total:</strong> {selectedOrder.total}</div>
+                <div><strong>Date:</strong> {selectedOrder.date ? format(new Date(selectedOrder.date), "yyyy-MM-dd HH:mm") : "-"}</div>
+                <div><strong>Status:</strong> {selectedOrder.status}</div>
+                <div><strong>Packages:</strong> {selectedOrder.packageSummary ?? "-"}</div>
+              </div>
+
+              <div className="mt-6 flex justify-end">
+                <button onClick={() => setSelectedOrder(null)} className="px-4 py-2 rounded-md bg-slate-100">Close</button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="px-4 py-3 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
