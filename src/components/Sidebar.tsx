@@ -15,6 +15,9 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
     { href: "/dashboard", label: "Dashboard" },
     { href: "/dashboard/orders", label: "Orders" },
     { href: "/dashboard/newsletter", label: "Newsletter" },
+    { href: "/dashboard/courses", label: "Courses" },
+    { href: "/dashboard/payments", label: "Payments" },
+    { href: "/dashboard/enrollments", label: "Enrollments" },
   ];
 
   return (
@@ -30,7 +33,7 @@ export default function Sidebar({ open = false, onClose }: SidebarProps) {
         className={
           `${open ? "translate-x-0" : "-translate-x-full"} ` + // mobile slide
           `fixed z-50 inset-y-0 left-0 w-64 md:w-[260px] ` + // base positioning
-          `md:static md:translate-x-0 md:sticky md:top-0 md:h-screen ` + // md+ layout & full height
+          `md:translate-x-0 md:sticky md:top-0 md:h-screen ` + // md+ layout & full height
           `flex flex-col border-r border-slate-200 bg-white transition-transform`
         }
       >

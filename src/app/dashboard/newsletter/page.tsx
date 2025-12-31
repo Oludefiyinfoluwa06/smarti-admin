@@ -116,11 +116,10 @@ export default function NewsletterPage() {
         prev.map((d) => (d.draftId === draft.draftId ? created : d))
       );
       setTotal((t) => t + 1);
-      setTotalPages((tp) => Math.max(1, Math.ceil((total + 1) / 10)));
+      setTotalPages(() => Math.max(1, Math.ceil((total + 1) / 10)));
     } catch {
       // keep optimistic in UI; optionally show toast on failure
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [total]);
 
   const handleSave = useCallback(async () => {
@@ -147,7 +146,7 @@ export default function NewsletterPage() {
       const wasSelected = id === selectedDraft?.draftId;
 
       if (wasSelected) {
-        setSelectedDraft((prev) => {
+        setSelectedDraft(() => {
           const next = drafts.find((d) => d.draftId !== id) || null;
           return next;
         });
